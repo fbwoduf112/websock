@@ -1,22 +1,21 @@
 import React from 'react';
 import NotificationBanner from './components/NotificationBanner';
-import StockInfoPanel from './components/StockInfoPanel';
+import StockHeaderPanel from './components/StockHeaderPanel';
+import StockChartPanel from './components/StockChartPanel';
 import ChatMessageList from './components/ChatMessageList';
 import ChatInput from './components/ChatInput';
 
-// 더미 주식 데이터 (노란 박스용)
 const dummyStockData = {
   name: "두산에너빌리티",
-  c: 150.75,   // 현재가
-  d: 2.25,     // 변동폭
-  dp: 1.52,    // 변동률(%)
-  h: 152.3,    // 고가
-  l: 149.1,    // 저가
-  o: 149.5,    // 시가
-  pc: 148.5,   // 전일 종가
+  c: 150.75,
+  d: 2.25,
+  dp: 1.52,
+  h: 152.3,
+  l: 149.1,
+  o: 149.5,
+  pc: 148.5,
 };
 
-// 더미 차트 데이터 (그래프용)
 const dummyPriceHistory = [
   { time: "10:00", price: 149.5 },
   { time: "10:01", price: 150.1 },
@@ -25,46 +24,75 @@ const dummyPriceHistory = [
   { time: "10:04", price: 150.75 },
 ];
 
-// ✅ 수정된 채팅 메시지 (빨간 박스용)
 const dummyMessages = [
-  {
-    nickname: "재열",
-    content: "오늘 두산에너빌리티 잘 가네!",
-  },
-  {
-    nickname: "소영",
-    content: "차트 상 저항선 돌파한 듯?",
-  },
-  {
-    nickname: "홍길동",
-    content: "150원 넘으면 진입할게요",
-  },
+  { nickname: "재열", content: "오늘 두산에너빌리티 잘 가네!" },
+  { nickname: "소영", content: "차트 상 저항선 돌파한 듯?" },
+  { nickname: "홍길동", content: "150원 넘으면 진입할게요" },
 ];
 
 const StockPage = () => {
+  const stockData = dummyStockData;
+  const priceHistory = dummyPriceHistory;
+  const messages = dummyMessages;
+  const sendMessage = (msg) => console.log('보낸 메시지:', msg);
+
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen p-4">
-      {/* 상단 알림 */}
+    <div className="max-w-screen-xl mx-auto min-h-screen p-6 bg-white">
       <NotificationBanner />
 
-      {/* 주식 정보 + 그래프 (노란 박스) */}
-      <StockInfoPanel
-        stockData={dummyStockData}
-        priceHistory={dummyPriceHistory}
-      />
+      {/* 위쪽: 정보 + 그래프 */}
+      <div className="flex gap-6 mb-6">
+        {/* 왼쪽: 주가 정보 */}
+        <div className="w-1/2">
+          <StockHeaderPanel stockData={stockData} />
+        </div>
 
-      {/* 채팅 내역 (빨간 박스) */}
-      <ChatMessageList messages={dummyMessages} />
+        {/* 오른쪽: 그래프 */}
+        <div className="w-1/2">
+          <StockChartPanel priceHistory={priceHistory} />
+        </div>
+      </div>
 
-      {/* ✅ 채팅 입력창 추가 (빨간 박스 아래) */}
-      <ChatInput
-        onSend={(msg) => {
-          console.log('보낸 메시지:', msg);
-          // 나중에 WebSocket으로 연결 시 sendMessage(msg)로 교체
-        }}
-      />
+      {/* 아래쪽: 채팅 전체 */}
+      <div className="w-full">
+        <ChatMessageList messages={messages} />
+        <ChatInput onSend={sendMessage} />
+      </div>
     </div>
   );
 };
 
 export default StockPage;
+
+
+/* ✅ 실시간 WebSocket 전환 시 아래 코드 사용 예정
+
+import { useStockWebSocket } from './hooks/useWebSocket';
+import { useChatWebSocket } from './hooks/useChatWebSocket';
+
+const StockPage = () => {
+  const stockCode = '034020';
+  const { stockData, priceHistory } = useStockWebSocket(stockCode);
+  const { messages, sendMessage } = useChatWebSocket(stockCode);
+
+  return (
+    <div className="max-w-screen-xl mx-auto min-h-screen p-6 bg-white">
+      <NotificationBanner />
+
+      <div className="flex gap-6">
+        <div className="w-2/3">
+          <ChatMessageList messages={messages} />
+          <ChatInput onSend={sendMessage} />
+        </div>
+
+        <div className="w-1/3">
+          <StockInfoPanel stockData={stockData} priceHistory={priceHistory} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StockPage;
+
+*/
