@@ -65,10 +65,16 @@ const StockPage = () => {
 export default StockPage;
 
 
-/* ✅ 실시간 WebSocket 전환 시 아래 코드 사용 예정
+/*
+✅ 실시간 WebSocket 전환 시 아래 코드로 교체
 
 import { useStockWebSocket } from './hooks/useWebSocket';
 import { useChatWebSocket } from './hooks/useChatWebSocket';
+import NotificationBanner from './components/NotificationBanner';
+import StockHeaderPanel from './components/StockHeaderPanel';
+import StockChartPanel from './components/StockChartPanel';
+import ChatMessageList from './components/ChatMessageList';
+import ChatInput from './components/ChatInput';
 
 const StockPage = () => {
   const stockCode = '034020';
@@ -79,20 +85,23 @@ const StockPage = () => {
     <div className="max-w-screen-xl mx-auto min-h-screen p-6 bg-white">
       <NotificationBanner />
 
-      <div className="flex gap-6">
-        <div className="w-2/3">
-          <ChatMessageList messages={messages} />
-          <ChatInput onSend={sendMessage} />
+      <div className="flex gap-6 mb-6">
+        <div className="w-1/2">
+          <StockHeaderPanel stockData={stockData} />
         </div>
 
-        <div className="w-1/3">
-          <StockInfoPanel stockData={stockData} priceHistory={priceHistory} />
+        <div className="w-1/2">
+          <StockChartPanel priceHistory={priceHistory} />
         </div>
+      </div>
+
+      <div className="w-full">
+        <ChatMessageList messages={messages} />
+        <ChatInput onSend={sendMessage} />
       </div>
     </div>
   );
 };
 
 export default StockPage;
-
 */
